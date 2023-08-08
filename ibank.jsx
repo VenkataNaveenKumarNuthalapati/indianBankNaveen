@@ -33,14 +33,13 @@ const closeConnection = () => {
 ///////////////////////////////////////////////////////////////////////////
 ////////////////// API 1 /////////////////////////
 app.get('/', async (req, res) => {
-    const accNum = req.params.accNum; // Access the parameter using req.params
-    const request = await getConnection('MySQLServerLogin', '4089');
     try {
+        const request = await getConnection('MySQLServerLogin', '4089');
         const records = await request.query(`SELECT * FROM AccountMaster;`);
         res.status(200).send(records.recordset);
     } catch (queryError) {
         console.error('Error executing SQL query:', queryError);
-        res.status(500).send('Error executing SQL query');
+        res.status(500).send(`Error executing SQL query ${queryError}`);
     } finally {
         closeConnection();
     }
@@ -49,8 +48,9 @@ app.get('/', async (req, res) => {
 ////////////////// API 1 /////////////////////////
 app.get('/login/:accNum', async (req, res) => {
     const accNum = req.params.accNum; // Access the parameter using req.params
-    const request = await getConnection('MySQLServerLogin', '4089');
+
     try {
+        const request = await getConnection('MySQLServerLogin', '4089');
         const records = await request.query(`SELECT * FROM AccountMaster WHERE ACID = ${accNum};`);
         res.status(200).send(records.recordset);
     } catch (queryError) {
@@ -64,8 +64,9 @@ app.get('/login/:accNum', async (req, res) => {
 ////////////////// API 2 /////////////////////////
 app.get('/statement/:accNum', async (req, res) => {
     const accNum = req.params.accNum; // Access the parameter using req.params
-    const request = await getConnection('MySQLServerLogin', '4089');
+
     try {
+        const request = await getConnection('MySQLServerLogin', '4089');
         const records = await request.query(`select * , 0 as TotalBal from TransactionMaster WHERE ACID = ${accNum};`);
         res.status(200).send(records.recordset);
     } catch (queryError) {
