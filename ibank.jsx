@@ -1,24 +1,18 @@
 const express = require('express');
 const cors = require('cors');
 const app = express();
+
+const config = require('./config.jsx');
+const bodyParser = require('body-parser');
 app.use(cors());
+app.use(bodyParser.json());
 
 //////////////////////// SqlServer DB connection /////////////////////////
 const mssql = require('mssql');
-
-const getConnection = async (user, password) => {
+const getConnection = async () => {
+    console.log(config.sql);
     try {
-        const config = {
-            user: `${user}`, // MySQLServerLogin
-            password: `${password}`, // 4089
-            server: '192.168.157.29',//'DESKTOP-N1JPSN9\\SQLEXPRESS', // 192.168.157.29
-            database: 'IndianBankDB',
-            options: {
-                encrypt: true,
-                trustServerCertificate: true
-            }
-        };
-        await mssql.connect(config);
+        await mssql.connect(config.sql);
         console.log('Connected to SQL Server successfully!');
         return new mssql.Request();
     } catch (error) {
@@ -31,10 +25,11 @@ const closeConnection = () => {
     mssql.close();
 };
 ///////////////////////////////////////////////////////////////////////////
+
 ////////////////// API 1 /////////////////////////
 app.get('/', async (req, res) => {
     try {
-        const request = await getConnection('MySQLServerLogin', '4089');
+        const request = await getConnection();
         const records = await request.query(`SELECT * FROM AccountMaster;`);
         res.status(200).send(records.recordset);
     } catch (queryError) {
@@ -50,7 +45,7 @@ app.get('/login/:accNum', async (req, res) => {
     const accNum = req.params.accNum; // Access the parameter using req.params
 
     try {
-        const request = await getConnection('MySQLServerLogin', '4089');
+        const request = await getConnection();
         const records = await request.query(`SELECT * FROM AccountMaster WHERE ACID = ${accNum};`);
         res.status(200).send(records.recordset);
     } catch (queryError) {
@@ -64,9 +59,8 @@ app.get('/login/:accNum', async (req, res) => {
 ////////////////// API 2 /////////////////////////
 app.get('/statement/:accNum', async (req, res) => {
     const accNum = req.params.accNum; // Access the parameter using req.params
-
     try {
-        const request = await getConnection('MySQLServerLogin', '4089');
+        const request = await getConnection();
         const records = await request.query(`select * , 0 as TotalBal from TransactionMaster WHERE ACID = ${accNum};`);
         res.status(200).send(records.recordset);
     } catch (queryError) {
@@ -77,6 +71,6 @@ app.get('/statement/:accNum', async (req, res) => {
     }
 });
 
-const server = app.listen(5000, () => {
-    console.log('Server is listening at port 5000...');
+const server = app.listen(config.port, () => {
+    console.log('Server is listening at port' + config.port);
 });
