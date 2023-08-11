@@ -10,7 +10,6 @@ app.use(bodyParser.json());
 //////////////////////// SqlServer DB connection /////////////////////////
 const mssql = require('mssql');
 const getConnection = async () => {
-    console.log(config.sql);
     try {
         await mssql.connect(config.sql);
         console.log('Connected to SQL Server successfully!');
