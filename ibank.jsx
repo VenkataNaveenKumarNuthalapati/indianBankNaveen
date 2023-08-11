@@ -1,30 +1,4 @@
-// const sql = require('mssql');
-
-// const config = {
-//     server: 'DESKTOP-N1JPSN9', // '192.168.157.29',
-//     database: 'IndianBankDB',
-//     options: {
-//         trustedConnection: true // Use Windows Authentication
-//     }
-// };
-
-// async function connectToSqlServer() {
-//     try {
-//         await sql.connect(config);
-//         console.log('Connected to SQL Server using Windows Authentication');
-
-//         // Perform database queries or other operations here...
-
-//         // Close the connection when done
-//         await sql.close();
-//         console.log('Connection closed');
-//     } catch (err) {
-//         console.error('Error connecting to SQL Server:', err);
-//     }
-// }
-
-// connectToSqlServer();
-
+/////////////////////////////////////////////  DP CODE /////////////////////////////////////////
 const express = require('express');
 const cors = require('cors');
 const app = express();
@@ -36,21 +10,12 @@ app.use(bodyParser.json());
 
 //////////////////////// SqlServer DB connection /////////////////////////
 const mssql = require('mssql');
+
 const getConnection = async () => {
+    console.log(config.sql);
     try {
-        await mssql.connect(
-            {
-                user: `MySQLServerLogin`,
-                password: `4089`,
-                database: `IndianBankDB`,
-                server: `192.168.157.29`,
-                options: {
-                    // encrypt: sqlEncrypt,
-                    // enableAritAbort: true,
-                    trustServerCertificate: true
-                }
-            }
-        );
+        // await mssql.connect(config.sql);
+        await mssql.connect(config.sql);
         console.log('Connected to SQL Server successfully!');
         return new mssql.Request();
     } catch (error) {
@@ -109,6 +74,6 @@ app.get('/statement/:accNum', async (req, res) => {
     }
 });
 
-const server = app.listen(5000, () => {
-    console.log('Server is listening at port' + 5000);
+const server = app.listen(config.port, () => {
+    console.log('Server is listening at ' + config.url);
 });
