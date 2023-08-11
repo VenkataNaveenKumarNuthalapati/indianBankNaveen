@@ -11,10 +11,10 @@ module.exports = {
     host: HOST,
     url: HOST_URL,
     sql: {
-        user: `${SQL_USER}`,
-        password: `${SQL_PASSWORD}`,
-        database: `${SQL_DATABASE}`,
-        server: `${SQL_SERVER}`,
+        user: `MySQLServerLogin`,
+        password: `4089`,
+        database: `IndianBankDB`,
+        server: `192.168.157.29`,
         options: {
             encrypt: sqlEncrypt,
             enableAritAbort: true,
