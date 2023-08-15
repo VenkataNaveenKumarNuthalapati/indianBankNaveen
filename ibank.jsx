@@ -52,7 +52,7 @@ app.get('/login/:accNum', async (req, res) => {
 
     try {
         // const request = await getConnection();
-        const records = await request.query(`SELECT * FROM AccountMaster WHERE ACID = ${accNum};`);
+        const records = await request.query(`SELECT Name, ACID, ClearBalance  FROM AccountMaster WHERE ACID = ${accNum};`);
         res.status(200).send(records.recordset);
     } catch (queryError) {
         console.error('Error executing SQL query:', queryError);
